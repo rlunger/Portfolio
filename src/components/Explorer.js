@@ -6,14 +6,12 @@ const StyledExplorer = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   align-content: center;
-  width: 30%;
+  width: 25%;
   height: 100%;
   margin: 0;
   border: 0;
-  background: #2d2c29;
-  border: 3px solid;
+  background: #1d1c19;
   border-color: #3d3c39;
-  border-radius: 5px;
 
   padding: 0;
 `

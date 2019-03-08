@@ -2,17 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 
 const StyledCommandPrompt = styled.span`
-  padding: 0;
-  margin: 0;
+  display: inline-block;
   height: 100%;
-  line-height: 2.55em;
-  background: #2d2c29;
-  vertical-align: text-bottom;
-  text-shadow: 0px 0px 8px black;
+  background: #1d1c19;
+  text-align: center;
+  text-shadow: 0px 0px 4px green;
   font-family: 'Fira Code', Consolas;
-  color: #5ab745;
-  font-size: 28px;
-  padding: 0 0 0 0px;
+  color: #99c24d;
+  font-size: 100%;
+  padding-top: 2px;
 `
 
 const CommandPrompt = props => {

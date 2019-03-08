@@ -173,11 +173,7 @@ body {
 
 class App extends Component {
   render () {
-    return (
-      <Terminal>
-        <GlobalStyle />
-      </Terminal>
-    )
+    return <Terminal />
   }
 }
 

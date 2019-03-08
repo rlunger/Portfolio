@@ -2,20 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 
 const StyledCommandInput = styled.input`
-  padding: 0;
-  margin: 0;
+  display: inline-block;
   height: 100%;
-  width: 99%;
-  background: #2d2c29;
+  width: 100%;
+  background: transparent;
   border: none;
-  text-shadow: 0px 0px 8px black;
+  text-shadow: 0px 1px 5px green;
   font-family: 'Fira Code', Consolas;
-  color: #5ab745;
-  font-size: 28px;
-  line-height: 0.2em;
-  padding: 0 0 0 10px;
-  vertical-align: top;
+  color: #ffbbff;
+  font-size: 100%;
   caret-color: transparent;
+  margin-left: 1%;
 
   :focus {
     outline: none;
@@ -27,7 +24,10 @@ class CommandInput extends React.Component {
     super()
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyUp = this.handleKeyUp.bind(this)
-    this.state = { text: '' }
+    this.state = { text: '', cursorOn: false }
+    setInterval(() => {
+      this.setState({ cursorOn: !this.state.cursorOn })
+    }, 400)
   }
   handleChange (e) {
     let newText = e.target.value.replace('█', '')
@@ -35,7 +35,7 @@ class CommandInput extends React.Component {
       this.setState({ text: newText })
     } else {
       this.setState({
-        text: e.target.value.substr(0, e.target.value.length - 1)
+        text: this.state.text.substr(0, this.state.text.length - 1)
       })
     }
   }
@@ -52,7 +52,9 @@ class CommandInput extends React.Component {
         type='text'
         onChange={this.handleChange}
         onKeyUp={this.handleKeyUp}
-        value={this.state.text + '█'}
+        value={this.state.text + (this.state.cursorOn ? '█' : '')}
+        autoFocus
+        spellCheck={'false'}
       />
     )
   }

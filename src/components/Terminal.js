@@ -2,20 +2,27 @@ import React from 'react'
 import styled from 'styled-components'
 import Console from './Console'
 import Explorer from './Explorer'
+import scanlines from './scanlines.jpg'
+import MonitorFrame from './MonitorFrame'
 
 const StyledTerminal = styled.div`
   display: flex;
+  background-image: url(${scanlines})
   flex-direction: row;
-  background-color: black;
-  color: green;
-  width: 90vw;
-  height: 90vh;
-  margin: 0;
+  background-color: #1d1c19;
+  color: whitesmoke;
+  width: 100vw;
+  height: 100vh;
   padding: 0;
   border: 0;
-  animation: textShadow 1.6s infinite;
-  z-index: 5;
+  z-index: 500;
+  overflow: hidden;
+  font-size: 27px;
+  font-family: 'Fira Code', Consolas;
+  @import url('https://fonts.googleapis.com/css?family=Lobster');
+`
 
+/*
   &::after {
     content: ' ';
     display: block;
@@ -54,13 +61,13 @@ const StyledTerminal = styled.div`
   }
   .crt {
   }
-`
+  */
 
 const Terminal = props => (
   <StyledTerminal>
     {props.children}
-    <Explorer />
     <Console />
+    <MonitorFrame />
   </StyledTerminal>
 )
 export default Terminal
