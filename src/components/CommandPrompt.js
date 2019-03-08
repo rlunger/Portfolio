@@ -4,7 +4,6 @@ import styled from 'styled-components'
 const StyledCommandPrompt = styled.span`
   display: inline-block;
   height: 100%;
-  background: #1d1c19;
   text-align: center;
   text-shadow: 0px 0px 4px green;
   font-family: 'Fira Code', Consolas;

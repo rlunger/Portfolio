@@ -4,7 +4,7 @@ import frame from './scanlines.jpg'
 
 const MonitorFrame = styled.img`
   position: absolute;
-  z-index: 10;
+  z-index: 0;
   width: 100vw;
   height: 100vh;
   opacity: 0.1;

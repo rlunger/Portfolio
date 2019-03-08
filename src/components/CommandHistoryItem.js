@@ -8,6 +8,7 @@ const StyledCommandHistoryItem = styled.div`
   word-wrap: break-word;
   white-space: pre-wrap;
   font-size: 80%;
+  font-variant-ligatures: normal;
 `
 
 const CommandHistoryItem = props => {

@@ -7,15 +7,14 @@ import MonitorFrame from './MonitorFrame'
 
 const StyledTerminal = styled.div`
   display: flex;
-  background-image: url(${scanlines})
-  flex-direction: row;
-  background-color: #1d1c19;
+  background-image: url(${scanlines});
+  background-size: cover;
   color: whitesmoke;
   width: 100vw;
   height: 100vh;
   padding: 0;
   border: 0;
-  z-index: 500;
+  z-index: 1;
   overflow: hidden;
   font-size: 27px;
   font-family: 'Fira Code', Consolas;
@@ -67,7 +66,6 @@ const Terminal = props => (
   <StyledTerminal>
     {props.children}
     <Console />
-    <MonitorFrame />
   </StyledTerminal>
 )
 export default Terminal

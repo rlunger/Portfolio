@@ -20,11 +20,11 @@ const StyledCommandInput = styled.input`
 `
 
 class CommandInput extends React.Component {
-  constructor () {
+  constructor (props) {
     super()
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyUp = this.handleKeyUp.bind(this)
-    this.state = { text: '', cursorOn: false }
+    this.state = { text: '', cursorOn: false, wrangler: props.wrangler }
     setInterval(() => {
       this.setState({ cursorOn: !this.state.cursorOn })
     }, 400)
@@ -41,8 +41,8 @@ class CommandInput extends React.Component {
   }
   handleKeyUp (e) {
     if (e.keyCode === 13) {
+      this.state.wrangler(this.state.text)
       this.setState({ text: '' })
-      window.alert('You sent the command ' + this.state.text)
     }
   }
 

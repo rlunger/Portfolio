@@ -22,7 +22,7 @@ const CommandLine = props => {
   return (
     <StyledCommandLine>
       <CommandPrompt>{'>'}</CommandPrompt>
-      <CommandInput />
+      <CommandInput wrangler={props.wrangler} />
     </StyledCommandLine>
   )
 }
