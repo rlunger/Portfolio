@@ -21,7 +21,7 @@ const StyledCommandLine = styled.div`
 const CommandLine = props => {
   return (
     <StyledCommandLine>
-      <CommandPrompt>{'>'}</CommandPrompt>
+      <CommandPrompt>{props.prompt}</CommandPrompt>
       <CommandInput wrangler={props.wrangler} />
     </StyledCommandLine>
   )

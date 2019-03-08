@@ -4,7 +4,6 @@ import styled from 'styled-components'
 const StyledCommandInput = styled.input`
   display: inline-block;
   height: 100%;
-  width: 100%;
   background: transparent;
   border: none;
   text-shadow: 0px 1px 5px green;
@@ -19,12 +18,19 @@ const StyledCommandInput = styled.input`
   }
 `
 
+let commandHistory = []
+
 class CommandInput extends React.Component {
   constructor (props) {
     super()
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyUp = this.handleKeyUp.bind(this)
-    this.state = { text: '', cursorOn: false, wrangler: props.wrangler }
+    this.state = {
+      text: '',
+      cursorOn: false,
+      wrangler: props.wrangler,
+      currentSelection: 0
+    }
     setInterval(() => {
       this.setState({ cursorOn: !this.state.cursorOn })
     }, 400)
@@ -42,7 +48,29 @@ class CommandInput extends React.Component {
   handleKeyUp (e) {
     if (e.keyCode === 13) {
       this.state.wrangler(this.state.text)
-      this.setState({ text: '' })
+      if (
+        commandHistory.length === 0 ||
+        this.state.currentSelection === commandHistory.length
+      ) {
+        commandHistory.push(this.state.text)
+      }
+      this.setState({ text: '', currentSelection: commandHistory.length })
+    } else if (e.keyCode === 38) {
+      let selection = this.state.currentSelection
+      if (selection > 0 && selection <= commandHistory.length) {
+        this.setState({
+          currentSelection: selection - 1,
+          text: commandHistory[selection - 1]
+        })
+      }
+    } else if (e.keyCode === 40) {
+      let selection = this.state.currentSelection
+      if (selection >= 0 && selection < commandHistory.length - 1) {
+        this.setState({
+          currentSelection: selection + 1,
+          text: commandHistory[selection + 1]
+        })
+      }
     }
   }
 

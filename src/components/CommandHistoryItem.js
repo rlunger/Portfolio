@@ -9,10 +9,16 @@ const StyledCommandHistoryItem = styled.div`
   white-space: pre-wrap;
   font-size: 80%;
   font-variant-ligatures: normal;
+  background-color: ${props => (props.color ? props.color : 'inherit')};
+  margin: 10px;
 `
 
 const CommandHistoryItem = props => {
-  return <StyledCommandHistoryItem>{props.children}</StyledCommandHistoryItem>
+  return (
+    <StyledCommandHistoryItem color={props.color}>
+      {props.children}
+    </StyledCommandHistoryItem>
+  )
 }
 
 export default CommandHistoryItem

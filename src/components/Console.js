@@ -6,6 +6,9 @@ import CommandHistoryItem from './CommandHistoryItem'
 import ConsoleTitle from './ConsoleTitle'
 import Avatar from './Avatar'
 import { Z_BLOCK } from 'zlib'
+import { timingSafeEqual } from 'crypto'
+import GithubLink from './GithubLink'
+import Resume from '../resume.pdf'
 
 const StyledConsole = styled.div`
   display: flex;
@@ -18,6 +21,35 @@ const StyledConsole = styled.div`
   border-color: #3d3c39;
 `
 
+let guid = 0
+
+const directoryContents = {
+  '~': ['projects/', 'docs/'],
+  '~/projects': ['smartshare', 'socialmedia', 'devduel'],
+  '~/docs': ['resume', 'about']
+}
+
+const resumeItem = (
+  <CommandHistoryItem>
+    <embed src={Resume} width={'50%'} height={'700px'} />
+  </CommandHistoryItem>
+)
+
+const helpItems = [
+  <ConsoleTitle fontSize='92px'>Help</ConsoleTitle>,
+  <CommandHistoryItem>{`
+  These are the commands you can use:
+
+    help =>                     prints this text
+   clear =>                    clears the screen
+   reset =>                           start over
+      cd =>             change working directory
+      ls => list everything in current directory
+    time =>              prints the current time
+    motd =>                   message of the day
+download =>                     downloads a file
+  `}</CommandHistoryItem>
+]
 let lsProjects = [
   <ConsoleTitle>Projects</ConsoleTitle>,
   <CommandHistoryItem>
@@ -39,6 +71,7 @@ SmartShare
 
 File sharing client/server suite.
 `}
+    <GithubLink target={''} />
   </CommandHistoryItem>
 ]
 let catSocialMedia = [
@@ -52,7 +85,22 @@ Social media backend set up to emulate Twitter.
   </CommandHistoryItem>
 ]
 
+let catAbout = [
+  <ConsoleTitle fontSize={'92px'}>About Me</ConsoleTitle>,
+  <CommandHistoryItem>
+    {`
+I am a father of two boys from Illinois who likes to engage with technology.
+I explore game design and programming language implementation as a passion.
+I've written software I'm excited about. Normally my wife and I play Minecraft
+or we race as a family in Mario Kart. Most weekends you'll find me at our
+local church where I've been a member of the Tech Team and the Lead Audio Engineer
+for 5 years pursuing my hobby of music production.
+  `}
+  </CommandHistoryItem>
+]
+
 let defaultItems = [
+  <div style={{ height: '100px' }} />,
   <ConsoleTitle>Welcome</ConsoleTitle>,
   <CommandHistoryItem>
     <Avatar />
@@ -74,20 +122,9 @@ class Console extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      items: [emptyRegion, ...defaultItems]
+      items: [emptyRegion, ...defaultItems],
+      currentDirectory: '~'
     }
-    /* setInterval(
-      () =>
-        this.setState({
-          items: [
-            ...this.state.items,
-            <CommandHistoryItem key={this.state.items.length + 1}>
-              {'=============hello================='}
-            </CommandHistoryItem>
-          ]
-        }),
-      300
-    ) */
   }
 
   getMotd = () => {
@@ -102,9 +139,37 @@ class Console extends React.Component {
     this.setState({
       items: [
         ...this.state.items,
-        <CommandHistoryItem>{item}</CommandHistoryItem>
+        <CommandHistoryItem key={guid++}>{item}</CommandHistoryItem>
       ]
     })
+  }
+
+  insertSimpleItems = items => {
+    this.setState({
+      items: [
+        ...this.state.items,
+        ...items.map(elem => (
+          <CommandHistoryItem key={guid++}>{elem}</CommandHistoryItem>
+        ))
+      ]
+    })
+  }
+
+  insertTimedItem = item => {
+    let id = guid++
+    this.setState({
+      items: [
+        ...this.state.items,
+        <CommandHistoryItem key={id} color={'brown'}>
+          {item}
+        </CommandHistoryItem>
+      ]
+    })
+    setTimeout(() => {
+      this.setState({
+        items: [...this.state.items.filter(elem => elem.key != id)]
+      })
+    }, 2000)
   }
 
   insertElement = elem => {
@@ -135,18 +200,34 @@ class Console extends React.Component {
         this.scrollToTop()
       }
 
+      case 'ls': {
+        if (directoryContents[this.state.currentDirectory]) {
+          this.insertSimpleItems(directoryContents[this.state.currentDirectory])
+        }
+        break
+      }
+
+      case 'help': {
+        this.insertElements(helpItems)
+        break
+      }
+
       case 'ls projects': {
         this.insertElements(lsProjects)
         break
       }
 
       case 'cat': {
-        this.insertSimpleItem('What would you like to view?')
+        this.insertTimedItem('What would you like to view?')
         break
       }
 
       case 'cat smartshare': {
-        this.insertElements(catSmartShare)
+        if (this.state.currentDirectory === '~/projects') {
+          this.insertElements(catSmartShare)
+        } else {
+          this.insertTimedItem('smartshare not found in current directory')
+        }
         break
       }
 
@@ -155,8 +236,51 @@ class Console extends React.Component {
         break
       }
 
+      case 'time': {
+        this.handleGetTime()
+        break
+      }
+
+      case 'open resume': {
+        this.handleDownloadResume()
+        break
+      }
+
+      case 'cat resume': {
+        this.insertElement(resumeItem)
+        break
+      }
+
+      case 'cat about': {
+        this.insertElements(catAbout)
+        break
+      }
+
+      case 'cd ~':
+      case 'cd ~/':
+      case 'cd ..': {
+        this.setState({ currentDirectory: '~' })
+        break
+      }
+
+      case 'cd projects':
+      case 'cd projects/':
+      case 'cd ~/projects':
+      case 'cd ~/projects/': {
+        this.setState({ currentDirectory: '~/projects' })
+        break
+      }
+
+      case 'cd docs':
+      case 'cd docs/':
+      case 'cd ~/docs':
+      case 'cd ~/docs/': {
+        this.setState({ currentDirectory: '~/docs' })
+        break
+      }
+
       default: {
-        this.insertSimpleItem(`Command '${command} unknown`)
+        this.insertTimedItem(`Command '${command}' unknown`)
         break
       }
     }
@@ -169,9 +293,21 @@ class Console extends React.Component {
 
   handleReset = () => {
     this.handleClear()
-    setTimeout(() => {
-      this.setState({ items: [emptyRegion, ...defaultItems] })
-    }, 400)
+    setTimeout(() => this.insertElements(defaultItems), 400)
+  }
+
+  handleDownloadResume = () => {
+    window.open(
+      'https://docs.google.com/document/d/12SmE_idZ9hVfGZQQtj_fDnfDnCu6upJ4BEmGf8b34x8/edit?usp=sharing',
+      '_blank'
+    )
+  }
+
+  handleGetTime = () => {
+    let d = new Date()
+    this.insertSimpleItem(
+      `The current time is ${d.getHours()}:${d.getMinutes()}`
+    )
   }
 
   scrollToBottom = () => {
@@ -184,6 +320,10 @@ class Console extends React.Component {
       block: 'start',
       inline: 'nearest'
     })
+  }
+
+  handleUrlChange = (action, location) => {
+    this.insertSimpleItem(location.pathname)
   }
 
   componentDidUpdate () {
@@ -215,7 +355,10 @@ class Console extends React.Component {
             }}
           />
         </CommandHistory>
-        <CommandLine wrangler={this.handleCommand} />
+        <CommandLine
+          wrangler={this.handleCommand}
+          prompt={this.state.currentDirectory + '/ >'}
+        />
       </StyledConsole>
     )
   }
