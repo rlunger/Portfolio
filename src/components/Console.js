@@ -48,6 +48,8 @@ const helpItems = [
     time =>              prints the current time
     motd =>                   message of the day
 download =>                     downloads a file
+     cat =>                   view file contents
+    open =>  open a file (resume) in another tab
   `}</CommandHistoryItem>
 ]
 let lsProjects = [
@@ -64,24 +66,30 @@ Which project would you like to know about?
   </CommandHistoryItem>
 ]
 let catSmartShare = [
-  <ConsoleTitle>SmartShare</ConsoleTitle>,
+  <ConsoleTitle fontSize={'92px'}>SmartShare</ConsoleTitle>,
   <CommandHistoryItem>
     {`
-SmartShare
-
 File sharing client/server suite.
 `}
-    <GithubLink target={''} />
+    <GithubLink target={'SmartShare'} />
   </CommandHistoryItem>
 ]
 let catSocialMedia = [
-  <ConsoleTitle>SocialMedia</ConsoleTitle>,
+  <ConsoleTitle fontSize={'92px'}>SocialMedia</ConsoleTitle>,
   <CommandHistoryItem>
     {`
-SmartShare
-
-Social media backend set up to emulate Twitter.
+Twitter-like RESTful API server.
 `}
+    <GithubLink target={'SocialMedia'} />
+  </CommandHistoryItem>
+]
+let catDevDuel = [
+  <ConsoleTitle fontSize={'92px'}>DevDuel</ConsoleTitle>,
+  <CommandHistoryItem>
+    {`
+Two developers battle for glory on GitHub.
+`}
+    <GithubLink target={'DevDuel'} />
   </CommandHistoryItem>
 ]
 
@@ -227,6 +235,22 @@ class Console extends React.Component {
           this.insertElements(catSmartShare)
         } else {
           this.insertTimedItem('smartshare not found in current directory')
+        }
+        break
+      }
+      case 'cat socialmedia': {
+        if (this.state.currentDirectory === '~/projects') {
+          this.insertElements(catSocialMedia)
+        } else {
+          this.insertTimedItem('socialmedia not found in current directory')
+        }
+        break
+      }
+      case 'cat devduel': {
+        if (this.state.currentDirectory === '~/projects') {
+          this.insertElements(catDevDuel)
+        } else {
+          this.insertTimedItem('devduel not found in current directory')
         }
         break
       }
